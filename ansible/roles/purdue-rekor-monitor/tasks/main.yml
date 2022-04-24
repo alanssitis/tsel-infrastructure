@@ -18,9 +18,11 @@
   notify:
     - Restart monitor services
   with_items:
+    - { service: 'monitor-db.service' }
     - { service: 'monitor-mirror.service' }
-    - { service: 'monitor-grpc.service' }
-    - { service: 'monitor-page.service' }
+    - { service: 'monitor-backend.service' }
+    - { service: 'monitor-frontend.service' }
+    - { service: 'monitor-proxy.service' }
 
 - name: Start monitor service
   systemd:
@@ -29,6 +31,8 @@
     state: started
     daemon-reload: true
   with_items:
+    - monitor-db.service
     - monitor-mirror.service
-    - monitor-grpc.service
-    - monitor-page.service
+    - monitor-backend.service
+    - monitor-frontend.service
+    - monitor-proxy.service

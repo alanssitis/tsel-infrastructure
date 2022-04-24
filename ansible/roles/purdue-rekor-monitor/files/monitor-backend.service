@@ -1,7 +1,8 @@
-[unit]
-Description=Purdue Monitor gRPC service
+[Unit]
+Description=Public Rekor Monitor Backend
 After=docker.service
 Requires=docker.service
+Requires=acme-companion.service
 After=monitor-mirror.service
 Requires=monitor-mirror.service
 
@@ -13,15 +14,16 @@ Restart=on-failure
 RestartSec=2
 
 TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker stop monitor-grpc
+ExecStartPre=-/usr/bin/docker stop monitor-backend
 ExecStart=/usr/bin/docker run \
---name monitor-grpc \
---rm \
---volumes-from monitor-mirror:ro \
+--env "DB_HOST=db" \
+--env "DB_NAME=monitor" \
+--env "DB_ROOT_PASSWORD={{{ TODO }}}" \
 --network=purdue-monitor \
--e GRPC_PORT=9000 \
---expose 9000 \
-sigstoremonitor/monitor-grpc
+--expose 5000 \
+--name monitor-backend \
+--rm \
+sigstoremonitor/monitor-backend
 
 [Install]
 WantedBy=multi-user.target

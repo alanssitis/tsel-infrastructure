@@ -1,0 +1,26 @@
+[Unit]
+Description=Public Rekor Monitor Frontend
+After=docker.service
+Requires=docker.service
+Requires=acme-companion.service
+After=monitor-backend.service
+Requires=monitor-backend.service
+
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Restart=on-failure
+RestartSec=2
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker stop monitor-frontend
+ExecStart=/usr/bin/docker run \
+--network=purdue-monitor \
+--expose 3000 \
+--name monitor-frontend \
+--rm \
+sigstoremonitor/monitor-frontend
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,26 @@
+[unit]
+Description=Purdue Monitor DB
+After=docker.service
+Requires=docker.service
+
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Restart=always
+RestartSec=2
+
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker stop monitor-db
+ExecStart=/usr/bin/docker run \
+--env "MARIADB_DATABASE=monitor" \
+--env "MARIADB_ROOT_PASSWORD={{{ TODO }}}" \
+--volume monitor:/var/lib/mysql:rw
+--network=purdue-monitor \
+--expose 3306 \
+--name monitor-db \
+--rm \
+mariadb:latest
+
+[Install]
+WantedBy=multi-user.target

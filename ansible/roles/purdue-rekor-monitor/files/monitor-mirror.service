@@ -1,7 +1,9 @@
 [Unit]
-Description=Purdue monitor mirror job
+Description=Purdue Rekor Monitor Monitoring Service 
 After=docker.service
 Requires=docker.service
+After=monitor-db.service
+Requires=monitor-db.service
 
 StartLimitIntervalSec=300
 StartLimitBurst=5
@@ -13,11 +15,13 @@ RestartSec=1
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker stop monitor-mirror
 ExecStart=/usr/bin/docker run \
+--env "DB_HOST=db" \
+--env "DB_NAME=monitor" \
+--env "DB_PASSWORD=monitor" \
+--network=purdue-monitor \
 --name monitor-mirror \
 --rm \
--v monitor:/monitor \
---network=purdue-monitor \
-sigstoremonitor/monitor-mirror -interval=61
+sigstoremonitor/monitor-mirror
 
 [Install]
 WantedBy=multi-user.target

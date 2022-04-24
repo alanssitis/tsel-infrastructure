@@ -1,10 +1,9 @@
-[Unit]
-Description=Public monitor interface over HTTPS
+[unit]
+Description=Purdue Monitor Proxy
 After=docker.service
 Requires=docker.service
-Requires=acme-companion.service
-After=monitor-grpc.service
-Requires=monitor-grpc.service
+After=monitor-frontend.service
+Requires=monitor-frontend.service
 
 StartLimitIntervalSec=300
 StartLimitBurst=5
@@ -14,20 +13,16 @@ Restart=on-failure
 RestartSec=2
 
 TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker stop monitor-page
+ExecStartPre=-/usr/bin/docker stop monitor-proxy
 ExecStart=/usr/bin/docker run \
 --env "LETSENCRYPT_HOST=monitor.seal.purdue.wtf" \
 --env "LETSENCRYPT_EMAIL=santiagotorres@purdue.edu" \
 --env "VIRTUAL_HOST=monitor.seal.purdue.wtf" \
---env "VIRTUAL_PORT=8000" \
---env "GRPC_PORT=9000" \
---env "SERVER_PORT=8000" \
---env "GRPC_CONTAINER=monitor-grpc" \
 --network=purdue-monitor \
---name monitor-page \
+--name monitor-proxy \
 --rm \
 --expose 443 \
-sigstoremonitor/monitor-page
+sigstoremonitor/monitor-proxy
 
 [Install]
 WantedBy=multi-user.target
