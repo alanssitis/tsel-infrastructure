@@ -14,8 +14,8 @@ TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker stop monitor-db
 ExecStart=/usr/bin/docker run \
 --env "MARIADB_DATABASE=monitor" \
---env "MARIADB_ROOT_PASSWORD={{{ TODO }}}" \
---volume monitor:/var/lib/mysql:rw
+--env "MARIADB_ROOT_PASSWORD=test" \
+--volume monitor:/var/lib/mysql:rw \
 --network=purdue-monitor \
 --expose 3306 \
 --name monitor-db \

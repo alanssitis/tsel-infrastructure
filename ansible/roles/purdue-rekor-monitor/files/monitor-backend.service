@@ -16,14 +16,14 @@ RestartSec=2
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker stop monitor-backend
 ExecStart=/usr/bin/docker run \
---env "DB_HOST=db" \
+--env "DB_HOST=monitor-db.purdue-monitor" \
 --env "DB_NAME=monitor" \
---env "DB_ROOT_PASSWORD={{{ TODO }}}" \
+--env "DB_ROOT_PASSWORD=test" \
 --network=purdue-monitor \
 --expose 5000 \
 --name monitor-backend \
 --rm \
-sigstoremonitor/monitor-backend
+sigstoremonitor/monitor-backend:test
 
 [Install]
 WantedBy=multi-user.target
